@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # Base de datos para escritura
+  mongodb-write:
+    image: mongo:8.0
+    container_name: mongodb-write
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - mongo_data_write:/data/db
+    networks:
+      - app-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Base de datos para lectura (independiente)
+  mongodb-read:
+    image: mongo:8.0
+    container_name: mongodb-read
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - mongo_data_read:/data/db
+    networks:
+      - app-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Servicio de logs
+  logs:
+    build:
+      context: ./logs
+      dockerfile: dockerfile
+    container_name: logs
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    environment:
+      MONGO_URI: mongodb://admin:admin123@mongodb-write:27017/backendJob?authSource=admin
+    depends_on:
+      mongodb-write:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # Servicio de escritura (app)
+  app:
+    build:
+      context: ./app
+      dockerfile: dockerfile
+    container_name: app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      MONGO_URI: mongodb://admin:admin123@mongodb-write:27017/backendJob?authSource=admin
+      JWT_SECRET: mi_super_secreto_jwt_2024_backend_proyecto_final_12345
+    depends_on:
+      mongodb-write:
+        condition: service_healthy
+      logs:
+        condition: service_started
+    networks:
+      - app-network
+
+  # Servicio de lectura
+  readuser:
+    build:
+      context: ./readuser
+      dockerfile: dockerfile
+    container_name: readuser
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      MONGO_URI: mongodb://admin:admin123@mongodb-read:27017/backendJob?authSource=admin
+      JWT_SECRET: mi_super_secreto_jwt_2024_backend_proyecto_final_12345
+      API_KEY: sk-or-v1-test
+    depends_on:
+      mongodb-read:
+        condition: service_healthy
+      logs:
+        condition: service_started
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data_write:
+  mongo_data_read:

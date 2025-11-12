@@ -1,0 +1,15 @@
+# Dependencias
+node_modules/
+
+# Logs y archivos temporales
+*.log
+
+# Variables de entorno
+.env
+
+# Archivos de lock según tu flujo de trabajo (puedes dejar solo uno)
+package-lock.json
+
+# Sistema
+.DS_Store
+Thumbs.db
