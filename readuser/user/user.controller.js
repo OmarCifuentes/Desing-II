@@ -256,6 +256,5 @@ function respuestaBasadaEnReglas(pregunta, contexto) {
 module.exports = { 
   getUsers, 
   getUser, 
-  obtenerToponimia,
   consultaRAG
 };
