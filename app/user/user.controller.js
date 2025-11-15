@@ -13,28 +13,46 @@ const createUser = async (req, res) => {
       phone, 
       birthdate, 
       gender,
-      photoBase64 //  Recibir foto en Base64
+      photoBase64
     } = req.body;
 
-    // Validar tamaño de la foto (opcional, ya lo hace el modelo)
-    if (photoBase64) {
-      const sizeInBytes = (photoBase64.length * 3) / 4;
-      const sizeInMB = sizeInBytes / (1024 * 1024);
-      
-      if (sizeInMB > 2) {
-        return res.status(400).json({ 
-          error: 'La foto no debe superar los 2MB' 
-        });
-      }
+    // =========================
+    // VALIDACIONES
+    // =========================
 
-      // Validar que sea una imagen válida (data:image/...)
-      if (!photoBase64.startsWith('data:image/')) {
-        return res.status(400).json({ 
-          error: 'El formato de la imagen no es válido. Debe ser data:image/...' 
-        });
+    // ID: solo números
+    if (!/^\d+$/.test(id)) {
+      return res.status(400).json({ error: 'ID inválido, solo números permitidos' });
+    }
+
+    // Nombre y apellidos: solo letras y espacios
+    const nameFields = { firstName, lastName, surname };
+    for (const [key, value] of Object.entries(nameFields)) {
+      if (value && !/^[A-Za-z\s]+$/.test(value)) {
+        return res.status(400).json({ error: `${key} inválido, no puede contener números` });
       }
     }
 
+    // Teléfono: 10 dígitos
+    if (phone && !/^\d{10}$/.test(phone)) {
+      return res.status(400).json({ error: 'Teléfono inválido, debe tener 10 dígitos' });
+    }
+
+    // Foto Base64 (opcional)
+    if (photoBase64) {
+      const sizeInBytes = (photoBase64.length * 3) / 4;
+      const sizeInMB = sizeInBytes / (1024 * 1024);
+      if (sizeInMB > 2) {
+        return res.status(400).json({ error: 'La foto no debe superar los 2MB' });
+      }
+      if (!photoBase64.startsWith('data:image/')) {
+        return res.status(400).json({ error: 'Formato de imagen inválido, debe ser data:image/...' });
+      }
+    }
+
+    // =========================
+    // CREAR USUARIO
+    // =========================
     const newUser = new User({
       firstName,
       lastName,
@@ -45,16 +63,18 @@ const createUser = async (req, res) => {
       phone,
       birthdate,
       gender,
-      photoBase64 //  Guardar Base64 directamente
+      photoBase64
     });
 
     await newUser.save();
 
-    // Enviar log (sin la foto para no saturar logs)
+    // =========================
+    // ENVIAR LOG (sin la foto)
+    // =========================
     try {
       await axios.post('http://logs:8082/log/', {
         idnum: id,
-        idType: idType,
+        idType,
         accion: 'Created',
         data: { 
           firstName, 
@@ -73,7 +93,9 @@ const createUser = async (req, res) => {
       console.warn('⚠️ Servicio de logs no disponible');
     }
 
-    // No devolver el Base64 completo en la respuesta (solo indicar si existe)
+    // =========================
+    // RESPUESTA
+    // =========================
     const userResponse = newUser.toObject();
     if (userResponse.photoBase64) {
       userResponse.photoBase64 = `[Imagen de ${(userResponse.photoBase64.length / 1024).toFixed(2)} KB]`;
@@ -83,8 +105,16 @@ const createUser = async (req, res) => {
       message: 'Usuario creado con éxito', 
       data: userResponse 
     });
+
   } catch (error) {
     console.error(error);
+
+    // Capturar errores de duplicado (MongoDB)
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({ error: `${field} ya está registrado` });
+    }
+
     res.status(500).json({ error: 'Error al crear el usuario' });
   }
 };

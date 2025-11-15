@@ -5,8 +5,12 @@ const userRoutes = require('./user/user.routes');
 
 const app = express();
 
-// Usar MONGO_URI de variable de entorno (Docker)
-const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/backendJob';
+if (!process.env.MONGO_URI) {
+  throw new Error("Falta la variable MONGO_URI en el archivo .env");
+}
+
+const mongoURI = process.env.MONGO_URI;
+
 
 mongoose
   .connect(mongoURI, { authSource: 'admin' })
