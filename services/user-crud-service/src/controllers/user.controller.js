@@ -16,6 +16,8 @@ const photoUploadService = require('../services/photoUpload.service');
 const createUser = async (req, res, next) => {
   try {
     const userData = req.body;
+    console.log('DEBUG: createUser body:', JSON.stringify(userData, null, 2));
+    console.log('DEBUG: createUser file:', req.file ? req.file.fieldname : 'NO FILE');
     const requestMeta = extractRequestMeta(req);
 
     // Manejo de foto (si existe)

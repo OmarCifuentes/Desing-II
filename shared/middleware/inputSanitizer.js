@@ -99,13 +99,16 @@ const handleValidationErrors = (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
+        const errorDetails = errors.array().map((err) => ({
+            field: err.path || err.param,
+            message: err.msg,
+            value: err.value,
+        }));
+        console.log('DEBUG: Validation Errors:', JSON.stringify(errorDetails, null, 2));
+
         return res.status(400).json({
             error: 'ValidationError',
-            details: errors.array().map((err) => ({
-                field: err.path || err.param,
-                message: err.msg,
-                value: err.value,
-            })),
+            details: errorDetails,
         });
     }
 

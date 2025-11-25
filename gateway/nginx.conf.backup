@@ -95,12 +95,6 @@ http {
         }
 
         location /auth {
-            # Ocultar headers CORS de los microservicios backend
-            proxy_hide_header Access-Control-Allow-Origin;
-            proxy_hide_header Access-Control-Allow-Methods;
-            proxy_hide_header Access-Control-Allow-Headers;
-            proxy_hide_header Access-Control-Allow-Credentials;
-            proxy_hide_header Access-Control-Max-Age;
             # Handle OPTIONS requests
             if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
@@ -145,12 +139,6 @@ http {
         }
 
         location /user {
-            # Ocultar headers CORS de los microservicios backend
-            proxy_hide_header Access-Control-Allow-Origin;
-            proxy_hide_header Access-Control-Allow-Methods;
-            proxy_hide_header Access-Control-Allow-Headers;
-            proxy_hide_header Access-Control-Allow-Credentials;
-            proxy_hide_header Access-Control-Max-Age;
             # Handle OPTIONS requests
             if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
@@ -187,12 +175,6 @@ http {
         # MAPPING: /personas -> /user (para compatibilidad con frontend)
         # ==========================================
         location /personas {
-            # Ocultar headers CORS de los microservicios backend
-            proxy_hide_header Access-Control-Allow-Origin;
-            proxy_hide_header Access-Control-Allow-Methods;
-            proxy_hide_header Access-Control-Allow-Headers;
-            proxy_hide_header Access-Control-Allow-Credentials;
-            proxy_hide_header Access-Control-Max-Age;
             # Handle OPTIONS requests
             if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
@@ -239,12 +221,6 @@ http {
         }
 
         location /query {
-            # Ocultar headers CORS de los microservicios backend
-            proxy_hide_header Access-Control-Allow-Origin;
-            proxy_hide_header Access-Control-Allow-Methods;
-            proxy_hide_header Access-Control-Allow-Headers;
-            proxy_hide_header Access-Control-Allow-Credentials;
-            proxy_hide_header Access-Control-Max-Age;
             # Handle OPTIONS requests
             if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
@@ -282,12 +258,6 @@ http {
         # MAPPING: /rag -> /query (para compatibilidad con frontend)
         # ==========================================
         location /rag {
-            # Ocultar headers CORS de los microservicios backend
-            proxy_hide_header Access-Control-Allow-Origin;
-            proxy_hide_header Access-Control-Allow-Methods;
-            proxy_hide_header Access-Control-Allow-Headers;
-            proxy_hide_header Access-Control-Allow-Credentials;
-            proxy_hide_header Access-Control-Max-Age;
             # Handle OPTIONS requests
             if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
@@ -335,12 +305,6 @@ http {
         }
 
         location /log {
-            # Ocultar headers CORS de los microservicios backend
-            proxy_hide_header Access-Control-Allow-Origin;
-            proxy_hide_header Access-Control-Allow-Methods;
-            proxy_hide_header Access-Control-Allow-Headers;
-            proxy_hide_header Access-Control-Allow-Credentials;
-            proxy_hide_header Access-Control-Max-Age;
             # Handle OPTIONS requests
             if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
@@ -377,12 +341,6 @@ http {
         # MAPPING: /logs -> /log (para compatibilidad con frontend)
         # ==========================================
         location /logs {
-            # Ocultar headers CORS de los microservicios backend
-            proxy_hide_header Access-Control-Allow-Origin;
-            proxy_hide_header Access-Control-Allow-Methods;
-            proxy_hide_header Access-Control-Allow-Headers;
-            proxy_hide_header Access-Control-Allow-Credentials;
-            proxy_hide_header Access-Control-Max-Age;
             # Handle OPTIONS requests
             if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;

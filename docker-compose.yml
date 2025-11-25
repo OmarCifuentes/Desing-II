@@ -84,7 +84,7 @@ services:
       - ENTRA_CLIENT_ID=${ENTRA_CLIENT_ID}
       - ENTRA_TENANT_ID=${ENTRA_TENANT_ID}
       - ENTRA_CLIENT_SECRET=${ENTRA_CLIENT_SECRET}
-      - ENTRA_REDIRECT_URI=${ENTRA_REDIRECT_URI:-http://localhost:8000/auth/callback}
+      - ENTRA_REDIRECT_URI=http://localhost:3000/auth/callback
       - REDIS_URL=redis://redis:6379
     depends_on:
       redis:

@@ -35,7 +35,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.post(
   '/',
   validateEntraToken,
-  upload.single('photo'), //Esperacampo'photo'enform-data
+  upload.single('foto'), // Frontend envía 'foto'
   mongoSanitizer,
   sanitizeBody,
   [
@@ -107,7 +107,7 @@ router.get('/:id', validateEntraToken, getUserById);
 router.patch(
   '/:id',
   validateEntraToken,
-  upload.single('photo'),
+  upload.single('foto'),
   mongoSanitizer,
   sanitizeBody,
   [
