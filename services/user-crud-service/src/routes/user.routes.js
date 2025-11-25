@@ -124,8 +124,8 @@ router.patch(
 /**
  * @route DELETE /user/:id
  * @desc Eliminar usuario (soft delete)
- * @access Admin only
+ * @access Protected (cualquier usuario autenticado)
  */
-router.delete('/:id', validateEntraToken, requireAdmin, deleteUser);
+router.delete('/:id', validateEntraToken, deleteUser);
 
 module.exports = router;
