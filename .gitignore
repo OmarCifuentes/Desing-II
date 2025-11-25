@@ -1,0 +1,26 @@
+# Dependencias
+node_modules/
+
+# Logs y archivos temporales
+*.log
+
+# Variables de entorno
+.env
+
+# Archivos de lock según tu flujo de trabajo (puedes dejar solo uno)
+package-lock.json
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Archivos generados y secretos
+token.txt
+test-token.js
+convert-env.js
+tests/tests/
+tests/environment.local.json
+reports/
+*.log
+*.local.json
+tests/environment.postman.json

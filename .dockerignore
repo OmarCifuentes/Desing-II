@@ -1,0 +1,11 @@
+node_modules
+.git
+tests
+reports
+*.log
+*.local.json
+token.txt
+test-token.js
+convert-env.js
+.DS_Store
+Thumbs.db

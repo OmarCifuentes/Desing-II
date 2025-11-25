@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # NEWMAN TEST RUNNER
+  # ==========================================
+  newman-runner:
+    image: postman/newman:alpine
+    container_name: newman-test-runner
+    entrypoint: /bin/sh
+    volumes:
+      - ./tests:/etc/newman
+      - ./tests/reports:/etc/newman/reports
+    environment:
+      - TEST_AUTH_METHOD=${TEST_AUTH_METHOD:-client_credentials}
+      - ENTRA_CLIENT_ID=${ENTRA_CLIENT_ID}
+      - ENTRA_TENANT_ID=${ENTRA_TENANT_ID}
+      - ENTRA_CLIENT_SECRET=${ENTRA_CLIENT_SECRET}
+    command: >
+      -c "
+        echo 'Waiting for services to be ready...';
+        sleep 15;
+        newman run /etc/newman/ProyectoFinal.postman_collection.json -e /etc/newman/environment.json --reporters cli,htmlextra,json --reporter-htmlextra-export /etc/newman/reports/report.html --reporter-json-export /etc/newman/reports/report.json --bail --timeout-request 30000
+      "
+    depends_on:
+      - nginx-gateway
+      - auth-service
+      - user-crud-service
+      - query-service
+      - log-service
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true
+    name: proyectofinal_app-network
